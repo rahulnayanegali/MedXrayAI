@@ -5,7 +5,7 @@ interface MedexerIconProps extends SVGProps<SVGSVGElement> {
   fill?: string;
 }
 
-const Medexericon: FC<MedexerIconProps> = ({ className, style, fill = 'currentColor', ...props }) => (
+const Medexericon: FC<MedexerIconProps> = ({ className, style, fill = 'currentColor' }) => (
   <svg
         className={className}
         style={{ fill: fill, ...style }}

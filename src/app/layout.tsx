@@ -1,12 +1,17 @@
+import { ReactNode } from 'react';
 import { AuthProvider } from '@/context/AuthContext';
 import './globals.css';
 
 export const metadata = {
-  title: 'Your App',
+  title: 'Med X',
   description: 'Migrated to Next.js 15',
 };
 
-export default function RootLayout({ children }) {
+interface RootLayoutProps {
+  children: ReactNode;
+}
+
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       <body>
