@@ -1,33 +1,83 @@
 'use client';
-import { useEffect } from 'react';
+
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import Navbar from '../navbar/Navbar';
 import Submain from '../submain/Submain';
+import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from '@/firebase/firebase';
 
 const Main = () => {
-  const { user, loading } = useAuth();
+  const { user, setUser, setUserType, loading } = useAuth();
   const router = useRouter();
+  const [error, setError] = useState('');
 
-  const handleLogin = (_email: string, _password: string, _userType: string) => {
-    // Implementation here
-    return {_email, _password, _userType}
-  }
+  const handleLogin = async (email: string, password: string, type: string) => {
+    try {
+      // Authenticate user
+      const auth = getAuth();
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const currentUser = userCredential.user;
+
+      if (currentUser) {
+        // Check user type
+        const userTypeDocRef = doc(db, 'Medical Professional', currentUser.uid);
+        const userTypeDocSnapshot = await getDoc(userTypeDocRef);
+
+        if (userTypeDocSnapshot.exists()) {
+          // Authorized user
+          setUser(currentUser);
+          setUserType(type);
+          localStorage.setItem('user', JSON.stringify(currentUser));
+          localStorage.setItem('userType', type);
+          router.push('/');
+        } else {
+          // Unauthorized user
+          setError("You are not authorized to log in as a doctor.");
+          await signOut(auth);
+        }
+      } else {
+        console.log("No user signed in");
+        // Handle case where no user is signed in
+      }
+    } catch (error: unknown) {
+      // Handle errors
+      if (error instanceof Error) {
+        setError(error.message); // Display error message to user
+        console.error("Login error:", error);
+      } else {
+        setError("An unknown error occurred");
+        console.error("Unknown login error:", error);
+      }
+    }
+  };
 
   useEffect(() => {
     const autoLogin = async () => {
       try {
-        await handleLogin('patricia.normann@presbytarian.org', '3451231', 'doctor');
-      } catch (_error) {
+        const email = process.env.NEXT_PUBLIC_FIREBASE_EMAIL;
+        const password = process.env.NEXT_PUBLIC_FIREBASE_PASSWORD;
+        
+        if (email && password) {
+          await handleLogin(email, password, 'doctor');
+        } else {
+          console.error('Firebase credentials not found in environment variables');
+          router.push('/login');
+        }
+      } catch (_error: unknown) {
         router.push('/login');
-        console.warn(_error)
+        console.warn(_error);
       }
     };
 
     if (!user && !loading) {
       autoLogin();
     }
-  }, [user, loading, router]); // Added router to the dependency array
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, loading, router]);
+
 
   if (loading || !user) {
     return <div className='h-full w-full text-white inline-flex justify-center items-center'>Loading...</div>;
@@ -37,8 +87,12 @@ const Main = () => {
     <div className="h-screen w-screen bg-secondary justify-start items-center inline-flex">
       <Navbar />
       <Submain>
-        Dashboard
-        </Submain>
+        {error ? (
+          <div className="text-red-500">{error}</div>
+        ) : (
+          <div>Dashboard</div>
+        )}
+      </Submain>
     </div>
   );
 };
