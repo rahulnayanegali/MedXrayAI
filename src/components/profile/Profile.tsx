@@ -16,7 +16,7 @@ interface UserData {
   mp_number?: string;
   p_name?: string;
   p_number?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 const Profile = () => {
