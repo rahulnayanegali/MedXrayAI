@@ -1,5 +1,5 @@
 'use client';
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { auth } from '@/firebase/firebase'; // Local auth instance
 import { User } from 'firebase/auth'; // Official type import
 

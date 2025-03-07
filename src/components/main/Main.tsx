@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import Navbar from '../navbar/Navbar';
+import Submain from '../submain/Submain';
 
 const Main = () => {
   const { user, loading } = useAuth();
@@ -35,7 +36,9 @@ const Main = () => {
   return (
     <div className="h-screen w-screen bg-secondary justify-start items-center inline-flex">
       <Navbar />
-      Dashboard
+      <Submain>
+        Dashboard
+        </Submain>
     </div>
   );
 };
