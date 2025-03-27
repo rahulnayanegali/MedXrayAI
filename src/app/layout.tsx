@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { AuthProvider } from '@/context/AuthContext';
+import Navbar from '@/components/navbar/Navbar';
 import './globals.css';
 
 export const metadata = {
@@ -15,7 +16,14 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       <body>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <div className="flex h-screen">
+            <Navbar />
+            <main className="flex-1 overflow-auto">
+              {children}
+            </main>
+          </div>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -8,6 +8,7 @@ import Submain from '../submain/Submain';
 import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from '@/firebase/firebase';
+import Dashboard from '../dashboard/Dashboard';
 
 const Main = () => {
   const { user, setUser, setUserType, loading } = useAuth();
@@ -85,12 +86,11 @@ const Main = () => {
 
   return (
     <div className="h-screen w-screen bg-secondary justify-start items-center inline-flex">
-      <Navbar />
       <Submain>
         {error ? (
           <div className="text-red-500">{error}</div>
         ) : (
-          <div>Dashboard</div>
+          <Dashboard />
         )}
       </Submain>
     </div>
