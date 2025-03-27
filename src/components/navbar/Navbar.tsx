@@ -39,7 +39,7 @@ const Navbar = () => {
         
         <div className="self-stretch grow shrink basis-0 flex-col justify-start items-center flex p-6">
           <div className="self-stretch flex-col justify-between items-start flex gap-5">
-            {/* Dashboard Link */}
+            {/* Dashboard Link
             <div className="w-fit justify-start items-center gap-3 inline-flex">
               <MdDashboard className={`${isDashboardActive ? activeClassName : normalLink} w-[20px] h-[20px]`} />
               <Link 
@@ -48,7 +48,7 @@ const Navbar = () => {
               >
                 Dashboard
               </Link>
-            </div>
+            </div> */}
 
             {/* Medexer Link */}
             <div className="w-fit justify-start items-center gap-3 inline-flex">

@@ -8,6 +8,7 @@ import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from '@/firebase/firebase';
 import Dashboard from '../dashboard/Dashboard';
+import Medexer from '@/app/medexer/page';
 
 const Main = () => {
   const { user, setUser, setUserType, loading } = useAuth();
@@ -29,6 +30,8 @@ const Main = () => {
         if (userTypeDocSnapshot.exists()) {
           // Authorized user
           setUser(currentUser);
+          console.log('currentUser', currentUser);
+          console.log('type', type);
           setUserType(type);
           localStorage.setItem('user', JSON.stringify(currentUser));
           localStorage.setItem('userType', type);
@@ -89,7 +92,7 @@ const Main = () => {
         {error ? (
           <div className="text-red-500">{error}</div>
         ) : (
-          <Dashboard />
+          <Medexer />
         )}
       </Submain>
     </div>

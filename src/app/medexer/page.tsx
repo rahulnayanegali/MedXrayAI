@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { storage } from "../../firebase/firebase";
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import { v4 } from "uuid";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Loading from '../../components/loading/loading';
 
 interface FileData {
@@ -24,10 +24,10 @@ const Medexer: React.FC = () => {
     const [isDraggingOver, setIsDraggingOver] = useState<boolean>(false);
     const [uploadedImage, setUploadedImage] = useState<File | null>(null);
     const [finding, setFinding] = useState<string>('');
-    // const [_, setDescription] = useState<string>('');
+    const [description, setDescription] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    // const router = useRouter();
+    const router = useRouter();
 
     const openFileDialog = (): void => {
         fileInputRef.current?.click();
@@ -80,7 +80,7 @@ const Medexer: React.FC = () => {
 
     const deletePreviewFile = (): void => {
         setFinding('');
-        // setDescription('');
+        setDescription('');
         setFileData({ ...fileData, previewFile: null, errorMessage: '' });
     };
 
@@ -90,30 +90,36 @@ const Medexer: React.FC = () => {
         return mbSize.toFixed(2) + ' MB';
     };
 
-    const uploadImage = (): void => {
+    const uploadImage = async (): Promise<void> => {
         if (!uploadedImage) return;
         setIsLoading(true);
-        const imageRef = ref(storage, `images/${uploadedImage.name + v4()}`);
-        uploadBytes(imageRef, uploadedImage)
-            .then((snapshot) => {
-                return getDownloadURL(snapshot.ref);
-            })
-            .then((url) => {
-                console.log(url);
-                // handlePredict(url);
-            })
-            .catch((error) => {
-                setIsLoading(false);
-                console.error("Error uploading image:", error);
-            });
+        try {
+            const imageRef = ref(storage, `images/${uploadedImage.name + v4()}`);
+            const snapshot = await uploadBytes(imageRef, uploadedImage);
+            const url = await getDownloadURL(snapshot.ref);
+            console.log('Upload URL:', url);
+            await handlePredict(url);
+        } catch (error) {
+            setIsLoading(false);
+            console.error("Error uploading image:", error);
+            setFileData(prev => ({
+                ...prev,
+                errorMessage: 'Failed to upload image. Please try again.'
+            }));
+        }
     };
 
-    /**
-     * 
-     * @param imageURL 
     const handlePredict = async (imageURL: string): Promise<void> => {
         try {
-            const response = await fetch(`http://localhost:5001/predict?image_url=${encodeURIComponent(imageURL)}`);
+            // Use environment variable for API URL, fallback to localhost for development
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+            const response = await fetch(`${apiUrl}/api/predict`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ image_url: imageURL })
+            });
 
             if (!response.ok) {
                 throw new Error('Failed to fetch');
@@ -121,18 +127,29 @@ const Medexer: React.FC = () => {
 
             const data = await response.json();
 
+            if (data.error) {
+                throw new Error(data.error);
+            }
+
             console.log('Prediction:', data.prediction.name);
             console.log('Description:', data.prediction.description);
 
             setFinding(data.prediction.name);
             setDescription(data.prediction.description);
-            router.push("/report");
+            
+            // Add a small delay before navigation to ensure state updates are complete
+            setTimeout(() => {
+                router.push(`/report?result=${encodeURIComponent(data.prediction.name)}&img=${encodeURIComponent(imageURL)}&description=${encodeURIComponent(data.prediction.description)}`);
+            }, 100);
         } catch (error) {
             setIsLoading(false);
             console.error('Error occurred while fetching data:', error);
+            setFileData(prev => ({
+                ...prev,
+                errorMessage: 'Failed to process image. Please try again.'
+            }));
         }
     };
-     */
 
     return (
         <div className='w-full h-full flex flex-col justify-center items-center p-8'>
