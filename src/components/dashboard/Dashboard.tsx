@@ -58,7 +58,7 @@ const Dashboard = () => {
     };
 
     fetchLastScan();
-  }, [user?.uid, userType]);
+  }, [user, user?.uid, userType]);
 
   useEffect(() => console.log('lastScan', lastScan), [lastScan])
 
