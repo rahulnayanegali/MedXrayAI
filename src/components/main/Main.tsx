@@ -7,7 +7,6 @@ import Submain from '../submain/Submain';
 import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from '@/firebase/firebase';
-import Dashboard from '../dashboard/Dashboard';
 import Medexer from '@/app/medexer/page';
 
 const Main = () => {

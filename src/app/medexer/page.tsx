@@ -24,7 +24,6 @@ const Medexer: React.FC = () => {
     const [isDraggingOver, setIsDraggingOver] = useState<boolean>(false);
     const [uploadedImage, setUploadedImage] = useState<File | null>(null);
     const [finding, setFinding] = useState<string>('');
-    const [description, setDescription] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const router = useRouter();
@@ -80,7 +79,6 @@ const Medexer: React.FC = () => {
 
     const deletePreviewFile = (): void => {
         setFinding('');
-        setDescription('');
         setFileData({ ...fileData, previewFile: null, errorMessage: '' });
     };
 
@@ -135,7 +133,6 @@ const Medexer: React.FC = () => {
             console.log('Description:', data.prediction.description);
 
             setFinding(data.prediction.name);
-            setDescription(data.prediction.description);
             
             // Add a small delay before navigation to ensure state updates are complete
             setTimeout(() => {

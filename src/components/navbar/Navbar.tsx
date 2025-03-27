@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
-import { MdDashboard } from "react-icons/md";
 import { TbReportMedical } from "react-icons/tb";
 import Medexericon from "./medex-w";
 import Logo from '../../img/Logo.png';
@@ -12,7 +11,6 @@ const Navbar = () => {
   const pathname = usePathname(); // Get current route path
 
   // Next.js handles active states through path matching
-  const isDashboardActive = pathname === '/';
   const isMedexerActive = pathname === '/medexer';
   const isReportActive = pathname === '/reportgall';
 

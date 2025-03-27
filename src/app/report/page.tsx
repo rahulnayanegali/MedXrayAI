@@ -2,27 +2,25 @@
 
 import React, { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { db } from '../../firebase/firebase';
-import { collection, setDoc, doc, getDocs } from 'firebase/firestore';
 import { Timestamp } from "firebase/firestore";
 
-interface ReportData {
-  xr_image: string;
-  scan_date: Timestamp;
-  medical_term: string;
-  status: string;
-  mp_comment: string;
-  mp_review_date: string;
-  medical_description: string;
-  mp_id: string;
-  p_id: string;
-}
+// interface ReportData {
+//   xr_image: string;
+//   scan_date: Timestamp;
+//   medical_term: string;
+//   status: string;
+//   mp_comment: string;
+//   mp_review_date: string;
+//   medical_description: string;
+//   mp_id: string;
+//   p_id: string;
+// }
 
 const Report = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [showPopup, setShowPopup] = useState(false);
-  const [nextReportId, setNextReportId] = useState<string | null>(null);
+  const [showPopup] = useState(false);
+  const [nextReportId] = useState<string | null>(null);
 
   // Get parameters from URL
   const result = searchParams.get('result') || '';
@@ -38,43 +36,43 @@ const Report = () => {
   const currentDate = new Date();
   const formattedDate = Timestamp.fromDate(currentDate);
 
-  // Function to insert data into Firestore
-  const addReportToFirestore = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    try {
-      // Fetch the number of existing reports
-      const reportsRef = collection(db, 'X-ray');
-      const reportsSnapshot = await getDocs(reportsRef);
-      const numReports = reportsSnapshot.size;
+  // // Function to insert data into Firestore
+  // const addReportToFirestore = async (e: React.MouseEvent) => {
+  //   e.preventDefault();
+  //   try {
+  //     // Fetch the number of existing reports
+  //     const reportsRef = collection(db, 'X-ray');
+  //     const reportsSnapshot = await getDocs(reportsRef);
+  //     const numReports = reportsSnapshot.size;
 
-      // Generate the next report ID
-      const nextId = String(numReports).padStart(5, '0');
+  //     // Generate the next report ID
+  //     const nextId = String(numReports).padStart(5, '0');
 
-      // Construct the document path and set the data
-      const reportData: ReportData = {
-        xr_image: url,
-        scan_date: formattedDate,
-        medical_term: result,
-        status: "0",
-        mp_comment: "",
-        mp_review_date: "",
-        medical_description: desc,
-        mp_id: "demo_doctor",
-        p_id: "demo_patient"
-      };
+  //     // Construct the document path and set the data
+  //     const reportData: ReportData = {
+  //       xr_image: url,
+  //       scan_date: formattedDate,
+  //       medical_term: result,
+  //       status: "0",
+  //       mp_comment: "",
+  //       mp_review_date: "",
+  //       medical_description: desc,
+  //       mp_id: "demo_doctor",
+  //       p_id: "demo_patient"
+  //     };
 
-      // Add the report data to Firestore
-      const reportDocRef = doc(db, 'X-ray', nextId);
-      await setDoc(reportDocRef, reportData);
+  //     // Add the report data to Firestore
+  //     const reportDocRef = doc(db, 'X-ray', nextId);
+  //     await setDoc(reportDocRef, reportData);
 
-      console.log("Report added successfully to Firestore.");
-      setNextReportId(nextId);
-      setShowPopup(true);
-    } catch (err) {
-      console.error("Error adding report to Firestore:", err);
-      alert(err);
-    }
-  };
+  //     console.log("Report added successfully to Firestore.");
+  //     setNextReportId(nextId);
+  //     setShowPopup(true);
+  //   } catch (err) {
+  //     console.error("Error adding report to Firestore:", err);
+  //     alert(err);
+  //   }
+  // };
 
   const handleOKClick = () => {
     router.push("/");
