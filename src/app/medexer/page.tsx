@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { storage } from "../../firebase/firebase";
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import { v4 } from "uuid";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import Loading from '../../components/loading/loading';
 
 interface FileData {
@@ -24,10 +24,10 @@ const Medexer: React.FC = () => {
     const [isDraggingOver, setIsDraggingOver] = useState<boolean>(false);
     const [uploadedImage, setUploadedImage] = useState<File | null>(null);
     const [finding, setFinding] = useState<string>('');
-    const [description, setDescription] = useState<string>('');
+    // const [_, setDescription] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const router = useRouter();
+    // const router = useRouter();
 
     const openFileDialog = (): void => {
         fileInputRef.current?.click();
@@ -80,7 +80,7 @@ const Medexer: React.FC = () => {
 
     const deletePreviewFile = (): void => {
         setFinding('');
-        setDescription('');
+        // setDescription('');
         setFileData({ ...fileData, previewFile: null, errorMessage: '' });
     };
 
@@ -108,6 +108,9 @@ const Medexer: React.FC = () => {
             });
     };
 
+    /**
+     * 
+     * @param imageURL 
     const handlePredict = async (imageURL: string): Promise<void> => {
         try {
             const response = await fetch(`http://localhost:5001/predict?image_url=${encodeURIComponent(imageURL)}`);
@@ -129,6 +132,7 @@ const Medexer: React.FC = () => {
             console.error('Error occurred while fetching data:', error);
         }
     };
+     */
 
     return (
         <div className='w-full h-full flex flex-col justify-center items-center p-8'>
